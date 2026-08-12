@@ -1,18 +1,14 @@
 const fallbackFoods = [
-  {id:'pao_frances',nombre:'Pão francês',porcion:'1 unidad (50 g)',kcal:135,proteina:4.5,carbohidratos:28,grasas:1.5},
-  {id:'huevo_hervido',nombre:'Huevo hervido',porcion:'1 unidad',kcal:78,proteina:6.3,carbohidratos:0.6,grasas:5.3},
-  {id:'huevo_frito_manteca',nombre:'Huevo frito con manteca',porcion:'1 unidad',kcal:110,proteina:6.3,carbohidratos:0.5,grasas:9},
-  {id:'amstel_350',nombre:'Cerveza Amstel',porcion:'1 lata (350 ml)',kcal:140,proteina:1,carbohidratos:11,grasas:0},
-  {id:'mamao',nombre:'Mamão',porcion:'100 g',kcal:43,proteina:0.5,carbohidratos:11,grasas:0.3},
-  {id:'soja_granulada_cocida',nombre:'Soja granulada cocida',porcion:'100 g',kcal:115,proteina:16,carbohidratos:10,grasas:1},
-  {id:'pescado_cocido',nombre:'Pescado cocido',porcion:'100 g',kcal:130,proteina:24,carbohidratos:0,grasas:4},
-  {id:'papa_hervida',nombre:'Papa hervida',porcion:'100 g',kcal:87,proteina:1.9,carbohidratos:20,grasas:0.1},
-  {id:'cafe_leche_azucar',nombre:'Café con leche en polvo y azúcar',porcion:'1 taza',kcal:80,proteina:1.5,carbohidratos:16,grasas:1.2}
+  {id:'pao_frances',categoria:'Panes y harinas',nombre:'Pão francês',porcion:'1 unidad (50 g)',kcal:135,proteina:4.5,carbohidratos:28,grasas:1.5},
+  {id:'huevo_hervido',categoria:'Huevos',nombre:'Huevo hervido',porcion:'1 unidad',kcal:78,proteina:6.3,carbohidratos:0.6,grasas:5.3},
+  {id:'amstel_350',categoria:'Bebidas alcohólicas',nombre:'Cerveza Amstel',porcion:'1 lata (350 ml)',kcal:140,proteina:1,carbohidratos:11,grasas:0},
+  {id:'mamao',categoria:'Frutas',nombre:'Mamão',porcion:'100 g',kcal:43,proteina:0.5,carbohidratos:11,grasas:0.3}
 ];
 
 let foods = [];
 const $ = id => document.getElementById(id);
 const dateInput = $('fecha');
+const categorySelect = $('categoria');
 const foodSelect = $('alimento');
 const quantityInput = $('cantidad');
 const mealSelect = $('momento');
@@ -50,7 +46,14 @@ async function loadFoods(){
     if(!r.ok) throw new Error('No se pudo cargar alimentos');
     foods = await r.json();
   }catch(e){ foods = fallbackFoods; }
-  foodSelect.innerHTML = foods.map(f=>`<option value="${f.id}">${f.nombre}</option>`).join('');
+  const categories = [...new Set(foods.map(f=>f.categoria || 'Otros'))].sort((a,b)=>a.localeCompare(b,'es'));
+  categorySelect.innerHTML = categories.map(c=>`<option value="${c}">${c}</option>`).join('');
+  renderFoodOptions();
+}
+function filteredFoods(){ return foods.filter(f=>(f.categoria || 'Otros')===categorySelect.value); }
+function renderFoodOptions(){
+  const list = filteredFoods();
+  foodSelect.innerHTML = list.map(f=>`<option value="${f.id}">${f.nombre}</option>`).join('');
   updatePortion();
 }
 function selectedFood(){ return foods.find(f=>f.id===foodSelect.value); }
@@ -62,7 +65,7 @@ function addEntry(){
   const f = selectedFood(); const qty = Number(quantityInput.value);
   if(!f || !qty || qty<=0) return;
   const entries = loadEntries();
-  entries.push({uid:(crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random()),foodId:f.id,nombre:f.nombre,porcion:f.porcion,momento:mealSelect.value,cantidad:qty,kcal:n(f.kcal*qty),proteina:n(f.proteina*qty),carbohidratos:n(f.carbohidratos*qty),grasas:n(f.grasas*qty)});
+  entries.push({uid:(crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random()),foodId:f.id,categoria:f.categoria,nombre:f.nombre,porcion:f.porcion,momento:mealSelect.value,cantidad:qty,kcal:n(f.kcal*qty),proteina:n(f.proteina*qty),carbohidratos:n(f.carbohidratos*qty),grasas:n(f.grasas*qty)});
   saveEntries(entries); quantityInput.value=1; renderAll();
 }
 function removeEntry(uid){ saveEntries(loadEntries().filter(e=>e.uid!==uid)); renderAll(); }
@@ -75,7 +78,7 @@ function renderDay(){
   const entries = loadEntries(); const t = totals(entries);
   $('total-kcal').textContent=n(t.kcal); $('total-prot').textContent=n(t.proteina); $('total-carb').textContent=n(t.carbohidratos); $('total-grasa').textContent=n(t.grasas);
   $('vacio').hidden = entries.length>0;
-  $('lista').innerHTML = entries.map(e=>`<div class="item"><div><strong>${e.nombre}</strong><small>${e.momento} · ${e.cantidad} × ${e.porcion} · P ${e.proteina} g · C ${e.carbohidratos} g · G ${e.grasas} g</small></div><div class="kcal">${e.kcal} kcal</div><button class="delete" data-uid="${e.uid}">Eliminar</button></div>`).join('');
+  $('lista').innerHTML = entries.map(e=>`<div class="item"><div><strong>${e.nombre}</strong><small>${e.momento}${e.categoria?` · ${e.categoria}`:''} · ${e.cantidad} × ${e.porcion} · P ${e.proteina} g · C ${e.carbohidratos} g · G ${e.grasas} g</small></div><div class="kcal">${e.kcal} kcal</div><button class="delete" data-uid="${e.uid}">Eliminar</button></div>`).join('');
   document.querySelectorAll('.delete').forEach(b=>b.onclick=()=>removeEntry(b.dataset.uid));
 }
 function renderHistory(){
@@ -102,6 +105,7 @@ function renderAll(){ renderDay(); renderHistory(); renderAccumulated(); }
 
 dateInput.value=localISODate();
 dateInput.addEventListener('change',()=>{renderDay();showView('hoy');});
+categorySelect.addEventListener('change',renderFoodOptions);
 foodSelect.addEventListener('change',updatePortion);
 $('agregar').addEventListener('click',addEntry);
 $('borrar-dia').addEventListener('click',clearDay);
