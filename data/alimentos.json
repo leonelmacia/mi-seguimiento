@@ -1,0 +1,11 @@
+[
+  {"id":"pao_frances","nombre":"Pão francês","porcion":"1 unidad (50 g)","kcal":135,"proteina":4.5,"carbohidratos":28,"grasas":1.5},
+  {"id":"huevo_hervido","nombre":"Huevo hervido","porcion":"1 unidad","kcal":78,"proteina":6.3,"carbohidratos":0.6,"grasas":5.3},
+  {"id":"huevo_frito_manteca","nombre":"Huevo frito con manteca","porcion":"1 unidad","kcal":110,"proteina":6.3,"carbohidratos":0.5,"grasas":9.0},
+  {"id":"amstel_350","nombre":"Cerveza Amstel","porcion":"1 lata (350 ml)","kcal":140,"proteina":1.0,"carbohidratos":11,"grasas":0},
+  {"id":"mamao","nombre":"Mamão","porcion":"100 g","kcal":43,"proteina":0.5,"carbohidratos":11,"grasas":0.3},
+  {"id":"soja_granulada_cocida","nombre":"Soja granulada cocida","porcion":"100 g","kcal":115,"proteina":16,"carbohidratos":10,"grasas":1},
+  {"id":"pescado_cocido","nombre":"Pescado cocido","porcion":"100 g","kcal":130,"proteina":24,"carbohidratos":0,"grasas":4},
+  {"id":"papa_hervida","nombre":"Papa hervida","porcion":"100 g","kcal":87,"proteina":1.9,"carbohidratos":20,"grasas":0.1},
+  {"id":"cafe_leche_azucar","nombre":"Café con leche en polvo y azúcar","porcion":"1 taza (2 cditas leche en polvo + 1 cda azúcar)","kcal":80,"proteina":1.5,"carbohidratos":16,"grasas":1.2}
+]
