@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>MI Seguimiento</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Nutrición diaria</p>
+        <h1>MI Seguimiento</h1>
+        <p class="muted">Registrá lo que comés y mirá tus calorías y macros del día.</p>
+      </div>
+      <input id="fecha" type="date" aria-label="Fecha" />
+    </header>
+
+    <section class="summary-grid">
+      <article class="card"><span>Calorías</span><strong id="total-kcal">0</strong><small>kcal</small></article>
+      <article class="card"><span>Proteínas</span><strong id="total-prot">0</strong><small>g</small></article>
+      <article class="card"><span>Carbohidratos</span><strong id="total-carb">0</strong><small>g</small></article>
+      <article class="card"><span>Grasas</span><strong id="total-grasa">0</strong><small>g</small></article>
+    </section>
+
+    <section class="panel">
+      <h2>Agregar comida</h2>
+      <div class="form-grid">
+        <label>Comida
+          <select id="momento">
+            <option>Desayuno</option><option>Almuerzo</option><option>Merienda</option><option>Cena</option><option>Extra</option>
+          </select>
+        </label>
+        <label>Alimento
+          <select id="alimento"></select>
+        </label>
+        <label>Cantidad
+          <input id="cantidad" type="number" min="0.1" step="0.1" value="1" />
+        </label>
+      </div>
+      <p id="porcion-info" class="muted"></p>
+      <button id="agregar" class="primary">Agregar al día</button>
+    </section>
+
+    <section class="panel">
+      <div class="section-head">
+        <h2>Lo de hoy</h2>
+        <button id="borrar-dia" class="ghost">Borrar día</button>
+      </div>
+      <div id="lista" class="list"></div>
+      <p id="vacio" class="empty">Todavía no cargaste comidas para esta fecha.</p>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
